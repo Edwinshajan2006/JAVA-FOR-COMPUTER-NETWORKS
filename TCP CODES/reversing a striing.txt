@@ -1,0 +1,49 @@
+import java.util.Scanner;
+import java.io.*;
+import java.net.*;
+
+public class Client{
+    public static void main (String[] args)throws Exception{
+        Socket s = new Socket("localhost",5000);
+            Scanner sc=new Scanner(System.in);
+            DataInputStream dis = new DataInputStream(s.getInputStream());
+            DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+            System.out.println("Enter the word you wanna reverse....");
+            String word=sc.nextLine();
+            dos.writeUTF(word);
+            String result = dis.readUTF();
+            System.out.println("The reversed string is:  "+result);
+
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+import java.util.Scanner;
+import java.net.*;
+import java.io.*;
+
+public class Server{
+    public static void main (String[] args)throws Exception{
+        ServerSocket ss=new ServerSocket(5000);
+        Socket s=ss.accept();
+
+        DataInputStream dis=new DataInputStream(s.getInputStream());
+        DataOutputStream dos=new DataOutputStream(s.getOutputStream());
+
+        String word=dis.readUTF();
+        String reverse = new StringBuilder(word).reverse().toString();
+        dos.writeUTF(reverse);
+
+        s.close();
+        ss.close();
+    }
+}

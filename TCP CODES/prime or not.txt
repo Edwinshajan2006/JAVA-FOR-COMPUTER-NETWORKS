@@ -1,0 +1,65 @@
+import java.util.Scanner;
+import java.io.*;
+import java.net.*;
+
+public class Client{
+    public static void main (String[] args )throws Exception{
+        Socket s=new Socket ("localhost",5000);
+        Scanner sc = new Scanner(System.in);
+
+        DataInputStream dis = new DataInputStream(s.getInputStream());
+        DataOutputStream dos= new DataOutputStream(s.getOutputStream());
+        System.out.println("Enter the number you wanna know..");
+        int a =sc.nextInt();
+        dos.writeInt(a);
+        String result=dis.readUTF();
+        System.out.println("The number you entered is "+result);
+        s.close();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+import java.util.Scanner;
+import java.io.*;
+import java.net.*;
+
+public class Server{
+    public static void main(String[] args)throws Exception{
+        ServerSocket ss=new ServerSocket(5000);
+        Socket s = ss.accept();
+
+        DataInputStream dis=new DataInputStream(s.getInputStream());
+        DataOutputStream dos=new DataOutputStream(s.getOutputStream());
+
+        int a=dis.readInt();
+        boolean prime = true;
+        if (a<2){
+            prime = false;
+        }
+        else {
+            for (int i=2;i<=Math.sqrt(a);i++){
+                if (a%i==0){
+                    prime=false;
+                    break;
+                }
+            }
+        }
+    if(prime){
+        dos.writeUTF("Prime");
+    }
+    else{
+        dos.writeUTF("Not Prime");
+    }
+        s.close();
+        ss.close();
+        
+    }
+}
