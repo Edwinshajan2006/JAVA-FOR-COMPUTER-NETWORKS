@@ -1,0 +1,61 @@
+import java.util.Scanner;
+import java.io.*;
+import java.net.*;
+
+public class Client{
+    public static void main (String[] args )throws Exception{
+        Socket s = new Socket("localhost",5000);
+
+        Scanner sc= new Scanner(System.in);
+        System.out.println("Connected witht the Server... \n ");
+        DataInputStream dis=new DataInputStream(s.getInputStream());
+        DataOutputStream dos=new DataOutputStream(s.getOutputStream());
+
+        System.out.println("Enter the first number :");
+        int a = sc.nextInt();
+        System.out.println("Enter the second number :");
+        int b =sc.nextInt();
+        System.out.println("Enter the third number :");
+        int c=sc.nextInt();
+
+        dos.writeInt(a);
+        dos.writeInt(b);
+        dos.writeInt(c);
+
+        System.out.println("Number sent to Server Successfully...");
+
+        int result=dis.readInt();
+        System.out.println("Data received from the server...\n");
+        System.out.println("The largest value : "+ result);
+
+        s.close();
+
+    }
+}
+
+
+
+
+
+import java.io.*;
+import java.net.*;
+
+public class Server{
+    public static void main (String[] args)throws Exception{
+        ServerSocket ss = new ServerSocket(5000);
+        Socket s= ss.accept();
+
+        DataInputStream dis=new DataInputStream(s.getInputStream());
+        DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+
+        int a = dis.readInt();
+        int b = dis.readInt();
+        int c = dis.readInt();
+
+        int largest = Math.max(a,Math.max(b,c));
+        dos.writeInt(largest);
+        s.close();
+        ss.close();
+
+    }
+}
