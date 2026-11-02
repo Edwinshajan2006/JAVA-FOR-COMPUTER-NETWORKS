@@ -1,0 +1,54 @@
+import java.util.Scanner;
+import java.net.*;
+import java.io.*;
+
+public class Client{
+    public static void main(String[] args)throws Exception {
+    Socket s=new Socket("Localhost",5000);
+    Scanner sc= new Scanner(System.in);
+    DataInputStream dis=new DataInputStream(s.getInputStream());
+    DataOutputStream dos=new DataOutputStream(s.getOutputStream());
+    System.out.println("Enter the numbers you wanna find digit sum of : ");
+    int n=sc.nextInt();
+    dos.writeInt(n);
+
+    int result=dis.readInt();
+    System.out.println("The sum of digits : " + result);
+    s.close();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+import java.util.Scanner;
+import java.io.*;
+import java.net.*;
+
+public class Server{
+    public static void main (String[] args) throws Exception{
+        ServerSocket ss=new ServerSocket(5000);
+        Socket s = ss.accept();
+        DataInputStream dis=new DataInputStream(s.getInputStream());
+        DataOutputStream dos=new DataOutputStream(s.getOutputStream());
+        int num=dis.readInt();
+        int n=Math.abs(num);
+        int sum=0;
+        while (n>0){
+            sum=sum+(n%10);
+            n=n/10;
+
+        }
+        dos.writeInt(sum);
+        s.close();
+        ss.close();
+
+    }
+
+}
