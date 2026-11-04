@@ -1,0 +1,47 @@
+import java.util.*;
+import java.net.*;
+import java.util.Scanner;
+
+
+class Client{
+    public static void main (String[] args)throws Exception{
+        DatagramSocket ds=new DatagramSocket();
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Enter the input : ");
+        String msg=sc.nextLine();
+        byte[] b =msg.getBytes();
+        InetAddress ip=InetAddress.getLocalHost();
+        ds.send(new DatagramPacket(b,b.length,ip,1234));
+        b=new byte[12324];
+        DatagramPacket p=new DatagramPacket(b,b.length);
+        ds.receive(p);
+        System.out.println("Result : "+ new String(p.getData(),0,p.getLength()));
+        ds.close();
+    }
+}
+
+
+
+
+
+
+
+import java.net.*;
+
+class Server{
+    public static void main(String[] args)throws Exception{
+        DatagramSocket ds=new DatagramSocket(1234);
+        byte[] b=new byte[1024];
+        DatagramPacket p=new DatagramPacket(b,b.length);
+        ds.receive(p);
+        String s=new String(p.getData(),0,p.getLength());
+        s=s.toUpperCase();
+
+        b=s.getBytes();
+        ds.send(new DatagramPacket(b,b.length,p.getAddress(),p.getPort()));
+        ds.close();
+        
+
+    }
+}
