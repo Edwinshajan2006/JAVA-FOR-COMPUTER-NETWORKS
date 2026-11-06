@@ -1,0 +1,73 @@
+import java.util.*;
+import java.net.*;
+
+
+public class Client{
+    public static void main(String[] args)throws Exception{
+        DatagramSocket ds=new DatagramSocket();
+        Scanner sc=new Scanner(System.in);
+
+        System.out.println("Enter input : ");
+        String msg=sc.nextLine();
+
+        byte[] b=msg.getBytes();
+        InetAddress ip=InetAddress.getLocalHost();
+        ds.send(new DatagramPacket (
+            b,
+            b.length,
+            ip,
+            1234
+        ));
+        b=new byte[1024];
+        DatagramPacket p=new DatagramPacket(b,b.length);
+        ds.receive(p);
+        System.out.println("Result : "+ new String(
+            p.getData(),
+            0,
+            p.getLength()
+        ));
+        ds.close();
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+import java.net.*;
+public class Server{
+    public static void main(String[] args)throws Exception{
+        DatagramSocket ds=new DatagramSocket(1234);
+        byte[] b=new byte[1024];
+        DatagramPacket p=new DatagramPacket(
+            b,
+            b.length
+        );
+        ds.receive(p);
+        int n=Integer.parseInt(
+            new String(p.getData(),0,p.getLength()));
+            boolean prime =n>1;
+            for(int i=2;i<=Math.sqrt(n);i++)
+                if(n%i==0) prime=false;
+            String s=prime?"Prime" :"Not Prime";
+            b=s.getBytes();
+            ds.send(new DatagramPacket(
+                b,
+                b.length,
+                p.getAddress(),
+                p.getPort()            
+                ));
+                ds.close();
+
+
+    }
+}
