@@ -17,10 +17,10 @@ public class Client{
         System.out.println("Generated Matrix is : \n");
         for (int i=0;i<n;i++){
             for (int j=0;j<n;j++){
-                a[i][j]=r.nextInt(10);
-                System.out.println(a[i][j]+"    ");
+                a[i][j]=r.nextInt(11);
+                System.out.print(a[i][j]+"    ");
             }
-            System.out.println("\n");
+            System.out.println();
         }
         dos.writeInt(n);
 
