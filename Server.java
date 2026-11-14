@@ -41,8 +41,3 @@ public class Server{
         ds.close();
     }
 }
-
-git status script
-git push origin main
-git commit -m "Last lap before exams "
-git .add
