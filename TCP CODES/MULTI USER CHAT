@@ -1,0 +1,158 @@
+
+import java.io.*;
+import java.net.*;
+
+public class Server {
+
+    static Socket s[] = new Socket[20];
+    static DataOutputStream dos[] = new DataOutputStream[20];
+
+    public static void main(String[] args) throws Exception {
+
+        ServerSocket ss = new ServerSocket(6500);
+        System.out.println("Server Started");
+
+        while(true) {
+            Socket socket = ss.accept();
+
+            int id = -1;
+
+            for(int i=0; i<20; i++) {
+                if(s[i] == null) {
+                    id = i;
+                    break;
+                }
+            }
+
+            if(id == -1) {
+                System.out.println("Maximum Clients Reached");
+                socket.close();
+                continue;
+            }
+
+            s[id] = socket;
+
+            System.out.println("Client " + id + " Connected");
+
+            new ClientHandler(socket, id).start();
+        }
+    }
+
+    static synchronized void broadcast(String msg, int sender) throws Exception {
+
+        for(int i=0; i<20; i++) {
+            if(dos[i] != null && i != sender) {
+                dos[i].writeUTF(msg);
+            }
+        }
+    }
+
+    static class ClientHandler extends Thread {
+
+        Socket socket;
+        int id;
+
+        ClientHandler(Socket socket, int id) {
+            this.socket = socket;
+            this.id = id;
+        }
+
+        public void run() {
+            try {
+                DataInputStream dis =
+                    new DataInputStream(socket.getInputStream());
+
+                dos[id] =
+                    new DataOutputStream(socket.getOutputStream());
+
+                while(true) {
+
+                    String msg = dis.readUTF();
+
+                    if(msg.equalsIgnoreCase("Exist")) {
+                        break;
+                    }
+
+                    System.out.println("Client " + id + " : " + msg);
+
+                    broadcast("Client " + id + " : " + msg, id);
+                }
+
+            }
+            catch(Exception e) {
+                System.out.println("Client Disconnected");
+            }
+
+            finally {
+                try {
+                    socket.close();
+                }
+                catch(Exception e) {}
+
+                s[id] = null;
+                dos[id] = null;
+
+                System.out.println("Client " + id + " Disconnected");
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+import java.io.*;
+import java.net.*;
+import java.util.*;
+
+public class TcpClient {
+
+    public static void main(String[] args) throws Exception {
+
+        Socket s = new Socket("localhost", 6500);
+
+        DataInputStream dis =
+            new DataInputStream(s.getInputStream());
+
+        DataOutputStream dos =
+            new DataOutputStream(s.getOutputStream());
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Connected to Server");
+
+        Thread t = new Thread(() -> {
+            try {
+                while(true) {
+                    String msg = dis.readUTF();
+                    System.out.println(msg);
+                }
+            }
+            catch(Exception e) {
+                System.out.println("Disconnected from Server");
+            }
+        });
+
+        t.start();
+
+        while(true) {
+
+            String msg = sc.nextLine();
+
+            dos.writeUTF(msg);
+
+            if(msg.equalsIgnoreCase("Exist")) {
+                break;
+            }
+        }
+
+        s.close();
+    }
+}
