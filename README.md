@@ -2,6 +2,12 @@
 
 <div align="center">
 
+<img src="./profile-banner.svg" width="100%" alt="JAVA NETWORKING LAB project banner" />
+
+</div>
+
+<div align="center">
+
 ### Practical Java programs for TCP and UDP networking labs
 
 [![Java](https://img.shields.io/badge/Language-Java-111827?style=flat-square&logo=openjdk)](https://www.java.com/)
